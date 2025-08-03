@@ -1,0 +1,46 @@
+# pyright: reportUnusedParameter=false
+
+try:
+    from typing import TYPE_CHECKING
+except ImportError:
+    TYPE_CHECKING = False  # pyright:ignore[reportConstantRedefinition]
+
+if TYPE_CHECKING:
+    from collections.abc import Buffer
+
+
+class Pin:
+    IN: int = 0
+    OUT: int = 1
+    PULL_UP: int = 1
+    OPEN_DRAIN: int = 2
+    IRQ_RISING: int = 1
+    IRQ_FALLING: int = 2
+
+    def __init__(self, pin: int, mode: int = IN, pull: int = PULL_UP): ...
+    def init(self, dir: int, value: int) -> None: ...
+    def __call__(self, value: int | None = None) -> int: ...
+    def value(self) -> int: ...
+    def on(self): ...
+    def off(self): ...
+
+
+class I2C:
+    def __init__(
+        self, bus: int = 0, sda: Pin | None = None, scl: Pin | None = None
+    ): ...
+    def writeto(self, addr: int, buf: bytes | bytearray): ...
+    def writevto(self, addr: int, vector: list[Buffer]): ...
+
+
+class SPI:
+    def init(self, baudrate: int, polarity: int, phase: int): ...
+    def write(self, data: Buffer): ...
+
+
+class RTC:
+    def memory(self, data: bytes | None = None) -> bytes: ...
+
+
+def deepsleep(duration: int | None = None): ...
+def lightsleep(duration: int | None = None): ...

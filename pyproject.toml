@@ -1,0 +1,7 @@
+[project]
+name = "fightingwords-micropython"
+version = "0.1.0"
+description = "Code for displaying PBM images on OLED display"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = []
