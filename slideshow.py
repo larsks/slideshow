@@ -130,28 +130,28 @@ class Projector:
             now = time.ticks_ms()
             idleLoops += 1
             for button in buttons:
-                _ = button.poll()
+                button.poll()
 
             if mode == self.MODE_PLAY:
                 if time.ticks_diff(now, lastSlideTime) > self.slideInterval * 1000:
                     self.show(next(self.slides))
                     lastSlideTime = now
 
-                if self.playButton.check():
+                if self.playButton.was_pressed():
                     idleLoops = 0
                     self.notify("pause")
                     print("STOP")
 
                     # clear any pending button press
-                    _ = self.nextButton.check()
+                    _ = self.nextButton.was_pressed()
                     mode = self.MODE_MANUAL
             elif mode == self.MODE_MANUAL:
-                if self.playButton.check():
+                if self.playButton.was_pressed():
                     idleLoops = 0
                     self.notify("play")
                     print("PLAY")
                     mode = self.MODE_PLAY
-                elif self.nextButton.check() or autoNext:
+                elif self.nextButton.was_pressed() or autoNext:
                     autoNext = False
                     idleLoops = 0
                     print("NEXT")
