@@ -7,10 +7,10 @@
  *
  *  ATTiny overview
  *                           +-\/-+
- *                Reset PB5 1|    |8  VCC
- *      display espActive (a) PB3 2|    |7 PB2  input c -- esp8266 WAKE (GPIO16)
- *      reset ((a|b)&c) PB4 3|    |6 PB1  input b -- next image button
- *                      GND 4|    |5 PB0  input a -- esp8266 ACTIVE (GPIO14)
+ *                Reset PB5 1|    |8 VCC
+ *        display power PB3 2|    |7 PB2  input c -- W̅A̅K̅E̅ (GPIO16)
+ *      R̅E̅S̅E̅T̅ ((a|b)&c) PB4 3|    |6 PB1  input b -- N̅E̅X̅T̅ (button))
+ *                      GND 4|    |5 PB0  input a -- ACTIVE (GPIO14)
  *                            ----
  */
 
