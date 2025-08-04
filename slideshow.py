@@ -17,7 +17,7 @@ if TYPE_CHECKING:
     from fakes import framebuf
     from fakes import machine
     from typing import TypeVar
-    from collections.abc import Iterable
+    from collections.abc import Iterator
 
     T = TypeVar("T")
 else:
@@ -40,7 +40,7 @@ def choice(items: list[T]) -> T:
 
 class SlideShow:
     images: list[str]
-    _iter: Iterable[framebuf.FrameBuffer] | None
+    _iter: Iterator[framebuf.FrameBuffer] | None
 
     def __init__(self, imageDir: str = "pbms"):
         self.images = os.listdir(imageDir)
@@ -55,7 +55,7 @@ class SlideShow:
             self._iter = self.slideshow()
         return next(self._iter)
 
-    def slideshow(self):
+    def slideshow(self) -> Iterator[framebuf.FrameBuffer]:
         while True:
             imgName = choice(self.images)
             print(f"IMAGE: {imgName}")
