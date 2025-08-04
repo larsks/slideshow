@@ -62,7 +62,7 @@ class SlideShow:
             try:
                 fb, _, _ = pbm.read_pbm_p4(f"pbms/{imgName}")
                 yield fb
-            except OSError as err:
+            except (OSError, ValueError) as err:
                 print(f"Failed to read {imgName}: {err}")
                 self.images.remove(imgName)
 
@@ -72,6 +72,7 @@ class Projector:
     display: ssd1306.SSD1306
     playButton: Button = Button(13)
     nextButton: Button = Button(12)
+    lastFb: framebuf.FrameBuffer | None = None
 
     # interval between slides in seconds
     slideInterval: float = 2
@@ -103,8 +104,18 @@ class Projector:
             self.slideInterval = slideInterval
 
     def show(self, fb: framebuf.FrameBuffer):
+        self.lastFb = fb
+        self.display.fill(0)
         self.display.blit(fb, 0, 0)
         self.display.show()
+
+    def notify(self, icon: str):
+        saved = self.lastFb
+        fb, _, _ = pbm.read_pbm_p4(f"icons/{icon}.pbm")
+        self.show(fb)
+        machine.lightsleep(500)
+        if saved is not None:
+            self.show(saved)
 
     def play(self, startPaused: bool = False):
         buttons = [self.playButton, self.nextButton]
@@ -128,6 +139,7 @@ class Projector:
 
                 if self.playButton.check():
                     idleLoops = 0
+                    self.notify("pause")
                     print("STOP")
 
                     # clear any pending button press
@@ -136,6 +148,7 @@ class Projector:
             elif mode == self.MODE_MANUAL:
                 if self.playButton.check():
                     idleLoops = 0
+                    self.notify("play")
                     print("PLAY")
                     mode = self.MODE_PLAY
                 elif self.nextButton.check() or autoNext:
@@ -145,6 +158,7 @@ class Projector:
                     self.show(next(self.slides))
 
                 if idleLoops >= self.maxIdleLoops:
+                    self.notify("sleep")
                     print("SLEEP")
                     _ = machine.RTC().memory(b"\x01")
                     machine.deepsleep()
